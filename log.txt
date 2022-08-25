@@ -36,4 +36,12 @@ Timestamp: Wed Aug 24 2022 04:51:09 GMT-0400 (Eastern Daylight Time)
 
 URL: /index
 Timestamp: Wed Aug 24 2022 04:51:16 GMT-0400 (Eastern Daylight Time)
+URL: /
+Timestamp: Thu Aug 25 2022 10:40:50 GMT-0400 (Eastern Daylight Time)
+
+URL: /favicon.ico
+Timestamp: Thu Aug 25 2022 10:40:50 GMT-0400 (Eastern Daylight Time)
+
+URL: /documentation
+Timestamp: Thu Aug 25 2022 10:40:54 GMT-0400 (Eastern Daylight Time)
 
