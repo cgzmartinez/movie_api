@@ -101,39 +101,43 @@
           Example: { ID: , Username: , Password: , Email: , },
         </td>
         <td>
-          A JSON object is requested <br />
-          Example: { ID: , Username: , Password: , Email: , },
+          Required: /users <br />
+          Example: localhost:8080/users/ { id: 1, name: "Mary", favoriteMovies:
+          [] };
         </td>
       </tr>
 
       <tr>
         <td>Allows users to update their user info</td>
-        <td>"/users/:id"</td>
+        <td>"/users/:username"</td>
         <td>:id</td>
         <td>
           PUT <br />
-          Example: app.put("/users:id", (req,res) =>{})
+          Example: app.put("/users:username", (req,res) =>{})
         </td>
         <td>
           A JSON object holding the updated user data <br />
           Example: { ID: Integer, Username: String, Password: String, Email:
           String, Birthday: Date },
         </td>
-        <td></td>
+        <td>
+          Required: /users, :username <br />
+          Example: localhost:8080/users/Mary
+        </td>
       </tr>
 
       <tr>
         <td>Allows users to add a movie to their list of favorites</td>
-        <td>"/users/:id/:movieTitle"</td>
-        <td>:users,:movieTitle</td>
+        <td>"/users/:username/movies/:movieID"</td>
+        <td>:username,:movieTitle</td>
         <td>
           POST <br />
-          Example: app.post("/users/:id/:movieTitle", (req,res) =>{})
+          Example: app.post("/users/:username/movies/:movieID", (req,res) =>{})
         </td>
         <td>A text message indicating that the movie has been added</td>
         <td>
           Required: :id, :movieTitle <br />
-          Example: localhost:8080/users/123/movies/John%20Wick
+          Example: localhost:8080/users/1/movies/John%20Wick
         </td>
       </tr>
 

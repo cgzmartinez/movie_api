@@ -11,13 +11,7 @@ app.use(express.static("public"));
 let users = [
   {
     id: 1,
-    name: "Mary",
-    favoriteMovies: []
-  },
-  {
-    id: 2,
-    name: "Driscol",
-    favoriteMovies: ["The Godfather"]
+    name: "Mary Beth"
   }
 ];
 
@@ -155,15 +149,28 @@ let movies = [
   }
 ];
 
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+app.get("/users/:name", (req, res) => {
+  res.json(
+    users.find(user => {
+      return user.name === req.params.name;
+    })
+  );
+});
+
 app.post("/users", (req, res) => {
   const newUser = req.body;
 
-  if (newUser.name) {
+  if (!newUser.name) {
+    const message = 'Missing "name" in request body';
+    res.status(400).send(message);
+  } else {
     newUser.id = uuid.v4();
     users.push(newUser);
-    res.status(201).json(users);
-  } else {
-    res.status(400).send("users need names");
+    res.status(201).send(newUser);
   }
 });
 
