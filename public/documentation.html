@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Documentation</title>
   </head>
   <body>
@@ -14,5 +14,176 @@
       GET and POST. Similar methods (CRUD) will be used to retrieve data from
       your database and store that data in a non-relational way.
     </p>
+
+    <style>
+      table,
+      td,
+      th {
+        border: 1px solid black;
+        width: auto;
+        text-align: center;
+      }
+    </style>
+
+    <table border="1" frame="hsides" rules="row">
+      <tr>
+        <th>Request</th>
+        <th>URL</th>
+        <th>Query Parameters</th>
+        <th>HTTP Method</th>
+        <th>Response Body Data format</th>
+        <th>Request Body Data format</th>
+      </tr>
+
+      <tr>
+        <td>Returns a list of all movies to the user</td>
+        <td>"/movies"</td>
+        <td>none</td>
+        <td>
+          GET <br />
+          Example: app.get("/movies", (req,res) =>{})
+        </td>
+        <td>
+          A JSON object holding data about all the movies <br />
+          Example: { "Title": "Oldboy", "Description": "The film follows Oh
+          Dae-Su who is imprisoned in a cell for 15 years without knowing why.",
+          "Genre": { "Name": "Mystery", }, "Year": 2005}
+        </td>
+        <td>
+          Required: /movies <br />
+          Example: localhost:8080/movies
+        </td>
+      </tr>
+
+      <tr>
+        <td>Returns data about a single movie by title</td>
+        <td>"/movies/:title"</td>
+        <td>:title</td>
+        <td>
+          GET <br />
+          Example: app.get("/movies/:title", (req,res) =>{})
+        </td>
+        <td>
+          A JSON object holding data about a single movie <br />
+          Example: {Title: "John Wick",}
+        </td>
+        <td>
+          Required: :movieTitle <br />
+          Example: localhost:8080/movies/Minari
+        </td>
+      </tr>
+
+      <tr>
+        <td>Returns data about a genre by name</td>
+        <td>"/movies/genre/:genreName"</td>
+        <td>:name</td>
+        <td>
+          GET<br />
+          Example: app.get("/movies/genre/:genreName", (req,res) =>{})
+        </td>
+        <td>
+          A JSON object holding data about a genre <br />
+          Example: Genre: { Name: "Thriller" }
+        </td>
+        <td>
+          Required: :genreName <br />
+          localhost:8080/movies/genre/Thriller}
+        </td>
+      </tr>
+
+      <tr>
+        <td>Allows new users to register</td>
+        <td>"/users"</td>
+        <td>none</td>
+        <td>POST <br />Example: app.post("/users", (req,res) =>{})</td>
+        <td>
+          A JSON object holding data about new user that was added <br />
+          Example: { ID: , Username: , Password: , Email: , },
+        </td>
+        <td>
+          A JSON object is requested <br />
+          Example: { ID: , Username: , Password: , Email: , },
+        </td>
+      </tr>
+
+      <tr>
+        <td>Allows users to update their user info</td>
+        <td>"/users/:id"</td>
+        <td>:id</td>
+        <td>
+          PUT <br />
+          Example: app.put("/users:id", (req,res) =>{})
+        </td>
+        <td>
+          A JSON object holding the updated user data <br />
+          Example: { ID: Integer, Username: String, Password: String, Email:
+          String, Birthday: Date },
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>Allows users to add a movie to their list of favorites</td>
+        <td>"/users/:id/:movieTitle"</td>
+        <td>:users,:movieTitle</td>
+        <td>
+          POST <br />
+          Example: app.post("/users/:id/:movieTitle", (req,res) =>{})
+        </td>
+        <td>A text message indicating that the movie has been added</td>
+        <td>
+          Required: :id, :movieTitle <br />
+          Example: localhost:8080/users/123/movies/John%20Wick
+        </td>
+      </tr>
+
+      <tr>
+        <td>Returns Data About a Director by Name</td>
+        <td>"/movies/director/:directorName"</td>
+        <td>:name</td>
+        <td>
+          GET <br />
+          Example: app.get("/movies/director/:directorName", (req,res) =>{})
+        </td>
+        <td>
+          A JSON object holding data about a director <br />
+          Example: Director: { Name: "Denis Villeneuve", Bio: "" },
+        </td>
+        <td>
+          Required: :directorName <br />
+          Example: localhost:8080/movies/director/Denis%20Villeneuve
+        </td>
+      </tr>
+
+      <tr>
+        <td>Allows Users to Remove a Movie from Favorites</td>
+        <td>"/users/:id/:movieTitle"</td>
+        <td>:users,:movieTitle</td>
+        <td>
+          DELETE <br />
+          Example: app.delete("/users/:id/:movieTitle", (req,res) =>{})
+        </td>
+        <td>A text message indicating that the movie has been deleted</td>
+        <td>
+          Required: :id, :movieTitle Example:
+          localhost:8080/users/123/movies/John%20Wick
+        </td>
+      </tr>
+
+      <tr>
+        <td>Allows Users to Unregister</td>
+        <td>"/users/:id"</td>
+        <td>:users</td>
+        <td>
+          DELETE <br />
+          Example: app.delete("/users/:id", (req,res) =>{})
+        </td>
+        <td>A text message indicating that the user has been deleted</td>
+        <td>
+          Required: :id <br />
+          Example: localhost:8080/users/123
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

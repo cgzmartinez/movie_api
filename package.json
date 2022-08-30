@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/cgzmartinez/movie_api/issues"
   },
-  "homepage": "https://github.com/cgzmartinez/movie_api#readme"
+  "homepage": "https://github.com/cgzmartinez/movie_api#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
 }
