@@ -149,42 +149,32 @@ let movies = [
   }
 ];
 
-app.get("/users", (req, res) => {
-  res.json(users);
-});
-
-app.get("/users/:name", (req, res) => {
-  res.json(
-    users.find(user => {
-      return user.name === req.params.name;
-    })
-  );
-});
-
+// Create
 app.post("/users", (req, res) => {
   const newUser = req.body;
 
-  if (!newUser.name) {
-    const message = 'Missing "name" in request body';
-    res.status(400).send(message);
-  } else {
+  if (newUser.name) {
     newUser.id = uuid.v4();
     users.push(newUser);
-    res.status(201).send(newUser);
+    res.status(201).json(newUser);
+  } else {
+    res.status(400).send("users need names");
   }
 });
+
+// Udpate
 
 app.put("/users/:id", (req, res) => {
   const { id } = req.params;
   const updatedUser = req.body;
 
-  let user = users.find(user => user.id === parseInt(id)); // search user by id
+  let user = users.find(user => user.id == id);
 
   if (user) {
     user.name = updatedUser.name;
     res.status(200).json(user);
   } else {
-    res.status(400).send("No such user found!");
+    res.status(400).send("no such user");
   }
 });
 
