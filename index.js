@@ -10,8 +10,10 @@ app.use(express.static("public"));
 
 let users = [
   {
-    id: 1,
-    name: "Mary Beth"
+    id: 444,
+    name: "Beth",
+    Password: 123456,
+    favoriteMovies: []
   }
 ];
 
@@ -158,7 +160,7 @@ app.post("/users", (req, res) => {
     users.push(newUser);
     res.status(201).json(newUser);
   } else {
-    res.status(400).send("users need names");
+    res.status(400).send("Users need names!");
   }
 });
 
@@ -168,13 +170,28 @@ app.put("/users/:id", (req, res) => {
   const { id } = req.params;
   const updatedUser = req.body;
 
-  let user = users.find(user => user.id == id);
+  let user = users.find(user => user.id == id); //search user by id
 
   if (user) {
     user.name = updatedUser.name;
     res.status(200).json(user);
   } else {
-    res.status(400).send("no such user");
+    res.status(400).send("No such user found!");
+  }
+});
+
+app.post("/users/:id/:movieTitle", (req, res) => {
+  const { id, movieTitle } = req.params;
+
+  let user = users.find(user => user.id == id); //search user by id
+
+  if (user) {
+    user.favoriteMovies.push(movieTitle);
+    res
+      .status(200)
+      .send(`${movieTitle} has been added to ${user.name}'s array`);
+  } else {
+    res.status(400).send("No such user found!");
   }
 });
 
@@ -225,11 +242,6 @@ app.get("/movies/genre/:genreName", (req, res) => {
   }
 });
 
-app.use((err, req, res, next) => {
-  console.log(err.stack);
-  res.status(500).send("Something went wrong!");
-});
-
 app.get("/movies/director/:directorName", (req, res) => {
   const { directorName } = req.params;
   const director = movies.find(movie => movie.Director.Name === directorName)
@@ -240,11 +252,6 @@ app.get("/movies/director/:directorName", (req, res) => {
   } else {
     res.status(400).send("Director not found");
   }
-});
-
-app.use((err, req, res, next) => {
-  console.log(err.stack);
-  res.status(500).send("Something went wrong!");
 });
 
 app.delete("/users/:id/:movieTitle", (req, res) => {
@@ -275,6 +282,11 @@ app.delete("/users/:id", (req, res) => {
   } else {
     res.status(400).send("No such user found!");
   }
+});
+
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send("Something went wrong!");
 });
 
 app.listen(8080, () => {
