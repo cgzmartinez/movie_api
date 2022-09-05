@@ -36,7 +36,7 @@
       </tr>
 
       <tr>
-        <td>Returns a list of all movies to the user</td>
+        <td>Endpoint returns a list of all movies to the user</td>
         <td>"/movies"</td>
         <td>none</td>
         <td>
@@ -45,9 +45,14 @@
         </td>
         <td>
           A JSON object holding data about all the movies <br />
-          Example: { "Title": "Oldboy", "Description": "The film follows Oh
-          Dae-Su who is imprisoned in a cell for 15 years without knowing why.",
-          "Genre": { "Name": "Mystery", }, "Year": 2005}
+          Example: { Title: "Oldboy", Description: "The film follows Oh Dae-Su
+          who is imprisoned in a cell for 15 years without knowing why.", Genre:
+          { Name: "Action", Description: "Action film is a film genre in which
+          the protagonist is thrust into a series of events that typically
+          involve violence and physical feats." }, Director: { Name: "Park Chan
+          Wook", Bio: "Park Chan Wook is a Korean screenwriter, director, and
+          producer.", Birth: "08/23/1963" }, ImagePath: "oldboy.png", Featured:
+          true }
         </td>
         <td>
           Required: /movies <br />
@@ -57,11 +62,11 @@
 
       <tr>
         <td>Returns data about a single movie by title</td>
-        <td>"/movies/:title"</td>
-        <td>:title</td>
+        <td>"/movies/:Title"</td>
+        <td>:Title</td>
         <td>
           GET <br />
-          Example: app.get("/movies/:title", (req,res) =>{})
+          Example: app.get("/movies/:Title", (req, res) =>{})
         </td>
         <td>
           A JSON object holding data about a single movie <br />
@@ -75,11 +80,11 @@
 
       <tr>
         <td>Returns data about a genre by name</td>
-        <td>"/movies/genre/:genreName"</td>
+        <td>"/movies/genre/:name"</td>
         <td>:name</td>
         <td>
           GET<br />
-          Example: app.get("/movies/genre/:genreName", (req,res) =>{})
+          Example: app.get("/movies/genre/:name", (req, res) =>{})
         </td>
         <td>
           A JSON object holding data about a genre <br />
@@ -95,25 +100,28 @@
         <td>Allows new users to register</td>
         <td>"/users"</td>
         <td>none</td>
-        <td>POST <br />Example: app.post("/users", (req,res) =>{})</td>
+        <td>POST <br />Example: app.post("/users", (req, res) =>{})</td>
         <td>
           A JSON object holding data about new user that was added <br />
-          Example: { ID: , Username: , Password: , Email: , },
+          Example: { ID: , Username: , Password: , Email: , Birthday: ,
+          FavoriteMovies: },
         </td>
         <td>
           Required: /users <br />
-          Example: localhost:8080/users/ { id: 1, name: "Mary", favoriteMovies:
-          [] };
+          Example: localhost:8080/users/ { _id: 2, Username: "nolandamme4",
+          Password: "superher0234", Email:"noltredamme@yahoo.com", Birthday: new
+          Date ("12-08-2001"), FavoriteMovies: [
+          ObjectId("631548adf03d5cd6f96b6b1d") ] };
         </td>
       </tr>
 
       <tr>
         <td>Allows users to update their user info</td>
         <td>"/users/:username"</td>
-        <td>:id</td>
+        <td>:username</td>
         <td>
           PUT <br />
-          Example: app.put("/users:username", (req,res) =>{})
+          Example: app.put("/users/:username", (req, res) =>{})
         </td>
         <td>
           A JSON object holding the updated user data <br />
@@ -122,22 +130,25 @@
         </td>
         <td>
           Required: /users, :username <br />
-          Example: localhost:8080/users/Mary
+          Example: { _id: 4, Username: "bluegal26", Password:
+          "blueisthewarmestcolor", Email:"blueytwoshoes@gmail.com", Birthday:
+          new Date ("03-03-1996"), FavoriteMovies: [
+          ObjectId("63154bd7f03d5cd6f96b6b24") ] }
         </td>
       </tr>
 
       <tr>
         <td>Allows users to add a movie to their list of favorites</td>
-        <td>"/users/:username/movies/:movieID"</td>
+        <td>"/users/:Username/movies/:MovieID"</td>
         <td>:username,:movieTitle</td>
         <td>
           POST <br />
-          Example: app.post("/users/:username/movies/:movieID", (req,res) =>{})
+          Example: app.post("/users/:Username/movies/:MovieID", (req, res) =>{})
         </td>
         <td>A text message indicating that the movie has been added</td>
         <td>
-          Required: :id, :movieTitle <br />
-          Example: localhost:8080/users/1/movies/John%20Wick
+          Required: :Username, :MovieID <br />
+          Example: localhost:8080/users/bluegal26/movies/John%20Wick
         </td>
       </tr>
 
@@ -176,16 +187,16 @@
 
       <tr>
         <td>Allows Users to Unregister</td>
-        <td>"/users/:id"</td>
+        <td>"/users/:Username"</td>
         <td>:users</td>
         <td>
           DELETE <br />
-          Example: app.delete("/users/:id", (req,res) =>{})
+          Example: app.delete("/users/:Username", (req,res) =>{})
         </td>
         <td>A text message indicating that the user has been deleted</td>
         <td>
-          Required: :id <br />
-          Example: localhost:8080/users/123
+          Required: :Username <br />
+          Example: "User 2 has been deleted."
         </td>
       </tr>
     </table>

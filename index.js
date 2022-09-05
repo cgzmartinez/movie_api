@@ -2,291 +2,204 @@ const express = require("express"),
   morgan = require("morgan"),
   bodyParser = require("body-parser"),
   uuid = require("uuid"),
-  app = express();
+  mongoose = require("mongoose"),
+  app = express(),
+  Models = require("./models.js");
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
 
-let users = [
-  {
-    id: 444,
-    name: "Beth",
-    Password: 123456,
-    favoriteMovies: []
-  }
-];
-
-let movies = [
-  {
-    Title: "Parasite",
-    Description:
-      "The film follows a Korean family that attempt to be employed by the same wealthy family.",
-    Genre: {
-      Name: "Thriller"
-    },
-    Director: {
-      Name: "Bong Joon-Ho",
-      Bio: ""
-    },
-    Year: 2019
-  },
-  {
-    Title: "Tenet",
-    Description:
-      "The film follows a CIA agent that learns to travel back in time in order to stop a future attack.",
-    Genre: {
-      Name: "Science Fiction"
-    },
-    Director: {
-      Name: "Christopher Nolan",
-      Bio: ""
-    },
-    Year: 2020
-  },
-  {
-    Title: "Minari",
-    Description:
-      "The film follows a Korean-American family that move to a small Arkansas farm for their own American dream.",
-    Genre: {
-      Name: "Drama"
-    },
-    Director: {
-      Name: "Lee Isaac Chung",
-      Bio: ""
-    },
-    Year: 2021
-  },
-  {
-    Title: "The Godfather",
-    Description:
-      "The mafia film chronicles the Corleone Family, focusing on the transofrmation of the youngest son.",
-    Genre: {
-      Name: "Crime Drama"
-    },
-    Director: {
-      Name: "Francis Ford Coppola",
-      Bio: ""
-    },
-    Year: 1972
-  },
-  {
-    Title: "John Wick",
-    Description:
-      "The film follows former assassin John Wick and his attempt to hunt down the ment that broke into his home and killed his puppy.",
-    Genre: {
-      Name: "Action"
-    },
-    Director: {
-      Name: "Chad Stahelski",
-      Bio: ""
-    },
-    Year: 2014
-  },
-  {
-    Title: "Burning",
-    Description:
-      "The film depicts a young deliveryman who runs into his childhood friend, whom the deliveryman suspects is in danger.",
-    Genre: {
-      Name: "Mystery"
-    },
-    Director: {
-      Name: "Lee Chang-Dong",
-      Bio: ""
-    },
-    Year: 2018
-  },
-  {
-    Title: "Oldboy",
-    Description:
-      "The film follows Oh Dae-Su who is imprisoned in a cell for 15 years without knowing why.",
-    Genre: {
-      Name: "Mystery"
-    },
-    Director: {
-      Name: "Park Chan-Wook",
-      Bio: ""
-    },
-    Year: 2005
-  },
-  {
-    Title: "Memoir of a Murderer",
-    Description:
-      "A former serial killer fights to protect his daughter from her psychotic boyfriend.",
-    Genre: {
-      Name: "Thriller",
-      Description: "Thriller is a suspense genre mixed with themes of..."
-    },
-    Director: {
-      Name: "Won Shin-Yun",
-      Bio: ""
-    },
-    Year: 2017
-  },
-  {
-    Title: "Sicario",
-    Description:
-      "The film follows an FBI agent who is enlisted into a task force to bring down a Mexican drug cartel.",
-    Genre: {
-      Name: "Action"
-    },
-    Director: {
-      Name: "Denis Villeneuve",
-      Bio: ""
-    },
-    Year: 2015
-  },
-  {
-    Title: "Everything Everywhere All at Once",
-    Description:
-      "The film follows a Chinese-American woman being audited by the IRS who discovers she must connect with parallel universe versions of herself.",
-    Genre: {
-      Name: "Science Fiction"
-    },
-    Director: {
-      Name: "Daniel Kwan",
-      Bio: ""
-    },
-    Year: 2022
-  }
-];
-
-// Create
-app.post("/users", (req, res) => {
-  const newUser = req.body;
-
-  if (newUser.name) {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).json(newUser);
-  } else {
-    res.status(400).send("Users need names!");
-  }
-});
-
-// Udpate
-
-app.put("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const updatedUser = req.body;
-
-  let user = users.find(user => user.id == id); //search user by id
-
-  if (user) {
-    user.name = updatedUser.name;
-    res.status(200).json(user);
-  } else {
-    res.status(400).send("No such user found!");
-  }
-});
-
-app.post("/users/:id/:movieTitle", (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find(user => user.id == id); //search user by id
-
-  if (user) {
-    user.favoriteMovies.push(movieTitle);
-    res
-      .status(200)
-      .send(`${movieTitle} has been added to ${user.name}'s array`);
-  } else {
-    res.status(400).send("No such user found!");
-  }
-});
-
-app.delete("/users/:id/:movieTitle", (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find(user => user.id == id); //search user by id
-
-  if (user) {
-    user.favoriteMovies = user.favoriteMovies.filter(
-      title => title !== movieTitle
-    );
-    res
-      .status(200)
-      .send(`${movieTitle} has been Removed from ${user.name}'s array`);
-  } else {
-    res.status(400).send("No such user found!");
-  }
-});
-
+// Get
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to myFlix App</h1>");
 });
 
+// Create new users
+app.post("/users", (req, res) => {
+  Users.findOne({ Username: req.body.Username })
+    .then(user => {
+      if (user) {
+        return res.status(400).send(req.body.Username + "already exists");
+      } else {
+        Users.create({
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
+        })
+          .then(user => {
+            res.status(201).json(user);
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).send("Error: " + error);
+          });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    });
+});
+
+// Adds movie to a user's favs
+app.post("/users/:Username/movies/:MovieID", (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $push: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true },
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
+});
+
+// Removes movie from user's favs
+app.delete("/users/:Username/movies/:MovieID", (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $pull: { favoriteMovies: req.params.MovieID }
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
+});
+
+// Get all users
+app.get("/users", (req, res) => {
+  Users.find()
+    .then(users => {
+      res.status(201).json(users);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+});
+
+// Get user by username
+app.get("/users/:Username", (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then(user => {
+      res.json(user);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+});
+
+// Updates user info
+app.put("/users/:Username", (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $set: {
+        Username: req.body.Username,
+        Password: req.body.Password,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
+      }
+    },
+    { new: true },
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
+});
+
+// Get all movies
 app.get("/movies", (req, res) => {
-  res.status(200).json(movies);
+  Movies.find()
+    .then(movies => {
+      res.status(201).json(movies);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-app.get("/movies/:title", (req, res) => {
-  const { title } = req.params;
-  const movie = movies.find(movie => movie.Title === title).Title;
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(400).send("Movie not found");
-  }
+// Get movies by their title
+app.get("/movies/:Title", (req, res) => {
+  Movies.findOne({ Title: req.params.Title })
+    .then(movie => {
+      res.json(movie);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-app.get("/movies/genre/:genreName", (req, res) => {
-  const { genreName } = req.params;
-  const genre = movies.find(movie => movie.Genre.Name === genreName).Genre;
-
-  if (genre) {
-    res.status(200).json(genre);
-  } else {
-    res.status(400).send("Genre not found");
-  }
+// Get genre info
+app.get("/movies/genre/:name", (req, res) => {
+  Movies.findOne({ "Genre.Name": req.params.name })
+    .then(movies => {
+      res.json(movies.Genre);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-app.get("/movies/director/:directorName", (req, res) => {
-  const { directorName } = req.params;
-  const director = movies.find(movie => movie.Director.Name === directorName)
-    .Director;
-
-  if (director) {
-    res.status(200).json(director);
-  } else {
-    res.status(400).send("Director not found");
-  }
+// Get director info
+app.get("/movies/directors/:name", (req, res) => {
+  Movies.findOne({ "Director.Name": req.params.name })
+    .then(movies => {
+      res.json(movies.Director);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-app.delete("/users/:id/:movieTitle", (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find(user => user.id == id); //search user by id
-
-  if (user) {
-    user.favoriteMovies = user.favoriteMovies.filter(
-      title => title !== movieTitle
-    );
-    res
-      .status(200)
-      .send(`${movieTitle} has been removed from ${user.name}'s array`);
-  } else {
-    res.status(400).send("No such movie found!");
-  }
-});
-
-app.delete("/users/:id", (req, res) => {
-  const { id } = req.params;
-
-  let user = users.find(user => user.id == id);
-
-  if (user) {
-    users = users.filter(user => user.id != id);
-    res.status(200).send(`${user.name}'s account has been deleted!`);
-  } else {
-    res.status(400).send("No such user found!");
-  }
-});
-
-app.use((err, req, res, next) => {
-  console.log(err.stack);
-  res.status(500).send("Something went wrong!");
+// Deletes user by username
+app.delete("/users/:Username", (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then(user => {
+      if (!user) {
+        res.status(400).send(req.params.Username + " was not found");
+      } else {
+        res.status(200).send(req.params.Username + " was deleted.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
 app.listen(8080, () => {
