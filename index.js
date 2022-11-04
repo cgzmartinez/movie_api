@@ -23,6 +23,8 @@ app.use(cors());
 let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
+  "http://localhost:4200",
+  "https://cinema-spark.herokuapp.com",
   "https://cinema-spark.netlify.app"
 ];
 app.use(
