@@ -26,6 +26,7 @@ let allowedOrigins = [
   "http://localhost:4200",
   "https://cinema-spark.herokuapp.com",
   "https://cinema-spark.netlify.app",
+  "https://cgzmartinez.github.io/myFlix-Angular-Client/",
   "*"
 ];
 app.use(
