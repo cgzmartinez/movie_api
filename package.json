@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/cgzmartinez/movie_api#readme",
   "devDependencies": {
+    "jsdoc": "^4.0.0",
     "nodemon": "^2.0.19"
   }
 }
