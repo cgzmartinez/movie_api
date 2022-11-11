@@ -14,13 +14,19 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true
 });
 
+const accessLogStream = fs.createWriteStream("log.txt", {
+  flag: "a"
+});
+
+app.use(morgan("combined", { stream: accessLogStream }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require("cors");
 app.use(cors());
 
-let allowedOrigins = [
+/*let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
   "http://localhost:4200",
@@ -45,6 +51,7 @@ app.use(
     }
   })
 );
+*/
 
 const { check, validationResult } = require("express-validator");
 
@@ -55,15 +62,15 @@ require("./passport");
 app.use(morgan("common"));
 app.use(express.static("public"));
 
-/* ******* START OF ENDPOINT DEFINITION ******* 
-************************************************
-************************************************
-*/
+/* ******* START OF ENDPOINT DEFINITION *******
+ ************************************************
+ ************************************************
+ */
 
-/** 
-* Gets index "/" endpoint
-* @returns Welcome
-*/
+/**
+ * Gets index "/" endpoint
+ * @returns Welcome
+ */
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to myFlix App</h1>");
 });
@@ -123,16 +130,16 @@ app.post(
   }
 );
 
-/** 
-* POST movie to the list of user's favorite movies (by username and movie id)
-* request body: bearer token
-* @function [path]/users/:Username/movies/:MovieID
-* @async
-* @param {string} Username
-* @param {string} MovieID
-* @requires passport
-* @returns updated user object
-*/
+/**
+ * POST movie to the list of user's favorite movies (by username and movie id)
+ * request body: bearer token
+ * @function [path]/users/:Username/movies/:MovieID
+ * @async
+ * @param {string} Username
+ * @param {string} MovieID
+ * @requires passport
+ * @returns updated user object
+ */
 app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -155,15 +162,15 @@ app.post(
   }
 );
 
-/** 
-* DELETE movie from favorites
-* request body: bearer token
-* @function [path]/users/:Username/movies/:MovieID
-* @param {string} Username
-* @param {string} MovieID
-* @requires passport 
-* @returns updated user object
-*/
+/**
+ * DELETE movie from favorites
+ * request body: bearer token
+ * @function [path]/users/:Username/movies/:MovieID
+ * @param {string} Username
+ * @param {string} MovieID
+ * @requires passport
+ * @returns updated user object
+ */
 app.delete(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -186,13 +193,13 @@ app.delete(
   }
 );
 
-/** 
-* GET all users
-* request body: bearer token
-* @function [path]/users
-* @requires passport 
-* @returns users
-*/
+/**
+ * GET all users
+ * request body: bearer token
+ * @function [path]/users
+ * @requires passport
+ * @returns users
+ */
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -208,13 +215,13 @@ app.get(
   }
 );
 
-/** 
-* GET user by username
-* request body: bearer token
-* @function [path]/users/:Username
-* @requires passport 
-* @returns user
-*/
+/**
+ * GET user by username
+ * request body: bearer token
+ * @function [path]/users/:Username
+ * @requires passport
+ * @returns user
+ */
 app.get(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
@@ -230,14 +237,14 @@ app.get(
   }
 );
 
-/** 
-* PUT updated user info into the database
-* request body: bearer token, updated user info
-* @function [path]/users/:Username
-* @param {string} Username
-* @requires passport
-* @returns updated user object
-*/
+/**
+ * PUT updated user info into the database
+ * request body: bearer token, updated user info
+ * @function [path]/users/:Username
+ * @param {string} Username
+ * @requires passport
+ * @returns updated user object
+ */
 app.put(
   "/users/:Username",
   [
@@ -283,13 +290,13 @@ app.put(
   }
 );
 
-/** 
-* GET info on all movies
-* request body: bearer token
-* @function [path]/movies
-* @requires passport 
-* @returns array of movie objects
-*/
+/**
+ * GET info on all movies
+ * request body: bearer token
+ * @function [path]/movies
+ * @requires passport
+ * @returns array of movie objects
+ */
 app.get(
   "/movies",
   passport.authenticate("jwt", { session: false }),
@@ -305,14 +312,14 @@ app.get(
   }
 );
 
-/** 
-* GET information on one particular movie by title
-* request body: bearer token
-* @function [path]/movies/:title
-* @param {string} Title (of movie)
-* @requires passport
-* @returns movie object
-*/
+/**
+ * GET information on one particular movie by title
+ * request body: bearer token
+ * @function [path]/movies/:title
+ * @param {string} Title (of movie)
+ * @requires passport
+ * @returns movie object
+ */
 app.get(
   "/movies/:Title",
   passport.authenticate("jwt", { session: false }),
@@ -329,13 +336,13 @@ app.get(
 );
 
 /**
-* GET information on one particular genre by name
-* request body: bearer token
-* @function [path]/genre/:genreName
-* @param {string} Name (of genre)
-* @requires passport
-* @returns genre object
-*/
+ * GET information on one particular genre by name
+ * request body: bearer token
+ * @function [path]/genre/:genreName
+ * @param {string} Name (of genre)
+ * @requires passport
+ * @returns genre object
+ */
 app.get(
   "/movies/genre/:name",
   passport.authenticate("jwt", { session: false }),
@@ -352,13 +359,13 @@ app.get(
 );
 
 /**
-* GET information on the movies of one particular director by name
-* request body: bearer token
-* @function [path]/movies/directors/:ame
-* @param {string} Name (of director)
-* @requires passport
-* @returns an array of movie objects
-*/
+ * GET information on the movies of one particular director by name
+ * request body: bearer token
+ * @function [path]/movies/directors/:ame
+ * @param {string} Name (of director)
+ * @requires passport
+ * @returns an array of movie objects
+ */
 app.get(
   "/movies/directors/:name",
   passport.authenticate("jwt", { session: false }),
@@ -375,12 +382,12 @@ app.get(
 );
 
 /** DELETE user from the database
-* request body: bearer token
-* @function [path]/users/:Username
-* @param {string} Username
-* @requires passport
-* @returns success message
-*/
+ * request body: bearer token
+ * @function [path]/users/:Username
+ * @param {string} Username
+ * @requires passport
+ * @returns success message
+ */
 app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
@@ -405,7 +412,7 @@ app.listen(port, "0.0.0.0", () => {
   console.log("Listening on Port " + port);
 });
 
-/* ******* END OF ENDPOINT DEFINITION ******* 
-************************************************
-************************************************
-*/
+/* ******* END OF ENDPOINT DEFINITION *******
+ ************************************************
+ ************************************************
+ */
