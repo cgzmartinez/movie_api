@@ -14,28 +14,14 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true
 });
 
-const accessLogStream = fs.createWriteStream("log.txt", {
-  flag: "a"
-});
-
-app.use(morgan("combined", { stream: accessLogStream }));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require("cors");
 app.use(cors());
 
-/*let allowedOrigins = [
-  "http://localhost:8080",
-  "http://localhost:1234",
-  "http://localhost:4200",
-  "https://cinema-spark.herokuapp.com",
-  "https://cinema-spark.netlify.app",
-  "http://cgzmartinez.github.io/myFlix-Angular-Client",
-  "https://cgzmartinez.github.io/myFlix-Angular-Client",
-  "*"
-];
+let allowedOrigins = ["*"];
+
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -51,7 +37,6 @@ app.use(
     }
   })
 );
-*/
 
 const { check, validationResult } = require("express-validator");
 
