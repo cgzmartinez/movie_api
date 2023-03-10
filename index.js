@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const cors = require("cors");
 app.use(cors());
 
-/*let allowedOrigins = [
+let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
   "http://localhost:4200",
@@ -46,7 +46,6 @@ app.use(
     }
   })
 );
-*/
 
 const { check, validationResult } = require("express-validator");
 
