@@ -23,13 +23,11 @@ app.use(cors());
 let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
-  "http://localhost:4200",
   "https://cinema-spark.herokuapp.com",
   "https://cinema-spark.netlify.app",
   "https://cgzmartinez.github.io/myFlix-Angular-Client",
   "https://cgzmartinez.github.io/myFlix-Angular-Client/welcome",
-  "https://cgzmartinez.github.io/myflix-angular-app/welcome",
-  "*"
+  "https://cgzmartinez.github.io/myflix-angular-app/welcome"
 ];
 app.use(
   cors({
